@@ -1,11 +1,11 @@
 import React from "react";
-import iconHeaderBot from "../../../img/logo-header-bot.png";
+import iconHeaderBot from "../../../../img/logo-header-bot.png";
 import { CiSearch } from "react-icons/ci";
 import { FaUser } from "react-icons/fa";
 import { IoBagHandle } from "react-icons/io5";
 import * as BotClass from "./classHeaderBot.jsx";
 import { IoMenu } from "react-icons/io5";
-
+import { Link } from "react-router-dom";
 
 function HeaderBot() {
   return (
@@ -38,7 +38,9 @@ function HeaderBot() {
           src={iconHeaderBot}
         ></BotClass.imageHeaderRight>
         <div>
-          <FaUser style={{ marginRight: "20px" }} />
+          <Link to="/register">
+            <FaUser />
+          </Link>
           <IoBagHandle />
         </div>
       </BotClass.right>

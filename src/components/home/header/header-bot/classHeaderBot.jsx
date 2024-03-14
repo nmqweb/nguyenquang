@@ -54,6 +54,10 @@ export const right = styled.div`
     display: flex;
     align-items: center;
     font-size: 25px;
+    & a {
+      color: white;
+      margin: 5px 20px 0px 0px;
+    }
     & > div {
       display: none;
       margin-right: 20px;

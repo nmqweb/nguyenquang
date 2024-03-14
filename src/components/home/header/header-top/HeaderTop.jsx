@@ -1,5 +1,5 @@
 import React from "react";
-import logoTop from "../../../img/logo-coolmate-top.png";
+import logoTop from "../../../../img/logo-coolmate-top.png";
 import * as TopClass from "./classHeaderTop.jsx";
 
 function HeaderTop() {
