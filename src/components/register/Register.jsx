@@ -1,21 +1,19 @@
 import React from "react";
-import RegisterForm from "./RegisterForm.jsx";
-import RegisterTitle from "./RegisterTitle.jsx";
-import { createGlobalStyle } from "styled-components";
-import * as Class from "./RegisterClass.jsx";
+import * as ClassRegister from "./ClassRegister";
+import InputRegister from "./InputRegister";
+import FormRegister from "./FormRegister";
+import { GlobalStyle } from "../GlobalStyle/GlobalStyle";
 
-const GlobalStyleRegister = createGlobalStyle`
-  ${Class.RegisterClass}
-`;
-const Container = Class.RegisterContainer;
 function Register() {
   return (
     <>
-      <GlobalStyleRegister></GlobalStyleRegister>
-      <Container>
-        <RegisterTitle />
-        <RegisterForm />
-      </Container>
+      <GlobalStyle />
+      <ClassRegister.Container>
+        <ClassRegister.FormRegisterContainer>
+          <ClassRegister.Title>Register</ClassRegister.Title>
+          <FormRegister />
+        </ClassRegister.FormRegisterContainer>
+      </ClassRegister.Container>
     </>
   );
 }
