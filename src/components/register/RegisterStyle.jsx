@@ -1,11 +1,12 @@
 import { styled, css, createGlobalStyle } from "styled-components";
 
 export const Container = styled.div`
-  display: flex;
+  display: ${(props) => props.display};
   width: 100%;
   height: 100vh;
   justify-content: center;
   align-items: center;
+  background-color: azure;
   @media (max-width: 540px) {
     align-items: flex-start;
   }
@@ -17,6 +18,7 @@ export const FormRegisterContainer = styled.div`
   padding: 30px 20px;
   border-radius: 10px;
   box-shadow: 0 15px 20px #aab2b9;
+  background-color: white;
 `;
 export const Title = styled.h1`
   text-align: center;
@@ -29,12 +31,12 @@ export const FormButton = styled.button`
   width: 100%;
   height: 40px;
   border-radius: 5px;
-  background-color: blueviolet;
+  background-color: blue;
   color: white;
   border: none;
   font-size: 20px;
   &:hover {
-    background-color: blue;
+    background-color: blueviolet;
   }
 `;
 export const FormInputContainer = styled.div`

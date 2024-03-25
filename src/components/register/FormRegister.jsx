@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import InputRegister from "./InputRegister";
-import { FormInputContainer, FormButton } from "./ClassRegister";
+import { FormInputContainer, FormButton } from "./RegisterStyle";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
-const urlApi = "https://65bcaa3bb51f9b29e931fc70.mockapi.io/api/user/user";
+export const urlApi = "https://65f263d6034bdbecc764adaa.mockapi.io/register";
 
 const RegisterSchema = yup.object({
   fullName: yup
@@ -15,12 +18,12 @@ const RegisterSchema = yup.object({
     .required("Full Name is required"),
   userName: yup
     .string("User Name at least 10 characters")
-    .min(5)
+    .min(10, "User Name at least 10 characters")
     .required("User Name is required"),
   email: yup
     .string()
     .email("Email is not valid")
-    .min(10)
+    .min(10, "Email is required")
     .required("Email is required"),
   phoneNumber: yup
     .string("Phone Number not valid")
@@ -42,6 +45,8 @@ const RegisterSchema = yup.object({
 });
 
 function FormRegister(props) {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -51,77 +56,107 @@ function FormRegister(props) {
     mode: `onChange`,
     resolver: yupResolver(RegisterSchema),
   });
-  const handleRegister = (dataSubmit) => {
-    console.log(dataSubmit);
-    const postApi = axios({ method: "POST", url: urlApi, data: dataSubmit });
+
+  const handleRegister = (dataRegister) => {
+    const postApi = axios({ method: "POST", url: urlApi, data: dataRegister });
 
     postApi
       .then((data) => console.log(data.data))
       .catch((err) => console.log(err));
 
-    localStorage.setItem("dataRegister", JSON.stringify(dataSubmit));
+    localStorage.setItem("dataRegister", JSON.stringify(dataRegister));
 
     reset();
+
+    toast.success("Register successful!", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: "Slide",
+    });
+    setTimeout(() => {
+      navigate("/login");
+    }, 2500);
   };
 
   const handleLogin = (e) => {
-    window.location.href = "login";
+    navigate("/login");
   };
   return (
-    <form onSubmit={handleSubmit(handleRegister)}>
-      <FormInputContainer>
-        <InputRegister
-          id="fullName"
-          label="Full Name"
-          type="text"
-          placeholder="Enter Your Full Name"
-          register={{ ...register("fullName") }}
-          errorMessage={errors.fullName?.message}
-        />
-        <InputRegister
-          id="userName"
-          label="User Name"
-          type="text"
-          placeholder="Enter Your User Name"
-          register={{ ...register("userName") }}
-          errorMessage={errors.userName?.message}
-        />
-        <InputRegister
-          id="email"
-          label="Email"
-          type="text"
-          placeholder="Enter Your Email"
-          register={{ ...register("email") }}
-          errorMessage={errors.email?.message}
-        />
-        <InputRegister
-          id="phoneNumber"
-          label="Phone Number"
-          type="text"
-          placeholder="Enter Your Phone Number"
-          register={{ ...register("phoneNumber") }}
-          errorMessage={errors.phoneNumber?.message}
-        />
-        <InputRegister
-          id="password"
-          label="Password"
-          type="password"
-          placeholder="Enter Your Password"
-          register={{ ...register("password") }}
-          errorMessage={errors.password?.message}
-        />
-        <InputRegister
-          id="confirm"
-          label="Confirm Password"
-          type="password"
-          placeholder="Enter Your Confirm Password"
-          register={{ ...register("confirm") }}
-          errorMessage={errors.confirm?.message}
-        />
-      </FormInputContainer>
-      <FormButton>Register</FormButton>
-      <FormButton onClick={(e) => handleLogin(e)}>Login</FormButton>
-    </form>
+    <>
+      <form onSubmit={handleSubmit(handleRegister)}>
+        <FormInputContainer>
+          <InputRegister
+            id="fullName"
+            label="Full Name"
+            type="text"
+            placeholder="Enter Your Full Name"
+            register={{ ...register("fullName") }}
+            errorMessage={errors.fullName?.message}
+          />
+          <InputRegister
+            id="userName"
+            label="User Name"
+            type="text"
+            placeholder="Enter Your User Name"
+            register={{ ...register("userName") }}
+            errorMessage={errors.userName?.message}
+          />
+          <InputRegister
+            id="email"
+            label="Email"
+            type="text"
+            placeholder="Enter Your Email"
+            register={{ ...register("email") }}
+            errorMessage={errors.email?.message}
+          />
+          <InputRegister
+            id="phoneNumber"
+            label="Phone Number"
+            type="text"
+            placeholder="Enter Your Phone Number"
+            register={{ ...register("phoneNumber") }}
+            errorMessage={errors.phoneNumber?.message}
+          />
+          <InputRegister
+            id="password"
+            label="Password"
+            type="password"
+            placeholder="Enter Your Password"
+            register={{ ...register("password") }}
+            errorMessage={errors.password?.message}
+          />
+          <InputRegister
+            id="confirm"
+            label="Confirm Password"
+            type="password"
+            placeholder="Enter Your Confirm Password"
+            register={{ ...register("confirm") }}
+            errorMessage={errors.confirm?.message}
+          />
+        </FormInputContainer>
+        <FormButton>Register</FormButton>
+        <FormButton onClick={(e) => handleLogin(e)}>Login</FormButton>
+      </form>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition="Slide"
+      />
+    </>
   );
 }
 

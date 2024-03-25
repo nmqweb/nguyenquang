@@ -1,113 +1,129 @@
 import React from "react";
+import { FormInput, FormButton } from "./LoginStyle";
+import LoginInput from "./LoginInput";
+import { FaEye } from "react-icons/fa6";
 import { useState } from "react";
-import LinkLogin from "./LinkLogin";
-import styled from "styled-components";
-import { Button } from "./LoginTitle.jsx";
-import { Title } from "./LoginTitle.jsx";
-import { Links } from "./LoginTitle.jsx";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import axios from "axios";
+import { urlApi } from "../register/FormRegister";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, Link } from "react-router-dom";
 
-const FormContainer = styled.div`
-  width: 50%;
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-`;
+const LoginSchema = yup.object({
+  userName: yup
+    .string("User Name at least 10 characters")
+    .min(10, "User Name at least 10 characters")
+    .required("User Name is required"),
+  password: yup
+    .string()
+    .min(10, "Password at least 10 characters")
+    .required("Password is required"),
+});
 
-const FormLogin = styled.form`
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 0 50px;
-  height: 100%;
-  text-align: center;
-`;
-
-const FromText = styled.p`
-  &,
-  a {
-    font-weight: 300;
-    font-size: 10px;
-    margin: 0;
-    margin-top: 10px;
-    display: none;
-    @media (max-width: 768px) {
-      display: inline;
-    }
-  }
-  & a {
-    color: #1f409a;
-    font-weight: 700;
-  }
-`;
-
-export const InputForm = styled.input`
-  background-color: #eee;
-  border: none;
-  padding: 12px 15px;
-  margin: 8px 0;
-  width: 100%;
-`;
 function LoginForm() {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const userRegisterLocalStorage = JSON.parse(
-    localStorage.getItem("userSignUp")
-  );
+  const navigate = useNavigate();
+  const [type, setType] = useState("password");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    mode: `onChange`,
+    resolver: yupResolver(LoginSchema),
+  });
 
-  const login = (e) => {
-    e.preventDefault();
-    if (name == "" || password == "") {
-      alert("Please enter your login");
+  const handelChangeText = (e) => {
+    console.log(type);
+    if (type == "password") {
+      setType("text");
     } else {
-      if (
-        name == userRegisterLocalStorage.name &&
-        password == userRegisterLocalStorage.password
-      ) {
-        alert("Login successfully");
-        window.location.href = "register";
-      } else {
-        alert("Login error");
-        setName("");
-        setPassword("");
-      }
+      setType("password");
+    }
+  };
+  const handleLogin = (dataLogin) => {
+    console.log(dataLogin);
+    const getApi = axios({ method: "GET", url: urlApi });
+    const dataRegister = JSON.parse(localStorage.getItem("dataRegister"));
+    console.log(dataRegister);
+    if (
+      dataLogin.userName === dataRegister.userName &&
+      dataLogin.password === dataRegister.password
+    ) {
+      toast.success("Login successful!", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: "Slide",
+      });
+      reset();
+
+      setTimeout(() => {
+        navigate("/");
+      }, 2500);
+    } else {
+      toast.error("Login error!", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: "Slide",
+      });
+      reset();
     }
   };
   return (
-    <FormContainer>
-      <FormLogin>
-        <Title>Sign In</Title>
-        <LinkLogin />
-        <span style={{ fontSize: "12px" }}>or use your account </span>
-        <InputForm
+    <>
+      <FormInput onSubmit={handleSubmit(handleLogin)}>
+        <LoginInput
+          id="userName"
+          placeholder="Enter Your User Name"
           type="text"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-          placeholder="Name"
+          name="User Name"
+          register={{ ...register("userName") }}
+          errorMessage={errors.userName?.message}
         />
-        <InputForm
-          type="password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-          placeholder="Password"
+        <LoginInput
+          id="password"
+          placeholder="Enter Your Password"
+          type={type}
+          icon=<FaEye
+            onClick={(e) => {
+              handelChangeText(e);
+            }}
+          />
+          name="Password"
+          register={{ ...register("password") }}
+          errorMessage={errors.password?.message}
         />
-        <Links href="#">Forgot your password?</Links>
-        <FromText>
-          DON'T HAVE AN ACCOUNT ?{" "}
-          <Links className="formLink" href="./register">
-            REGISTER NOW
-          </Links>
-        </FromText>
-        <Button className="formButton" onClick={(e) => login(e)}>
-          Login
-        </Button>
-      </FormLogin>
-    </FormContainer>
+        <FormButton>Login</FormButton>
+      </FormInput>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition="Slide"
+      />
+    </>
   );
 }
 

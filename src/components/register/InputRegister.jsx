@@ -1,5 +1,5 @@
 import React from "react";
-import { InputContainer } from "./ClassRegister";
+import { InputContainer } from "./RegisterStyle";
 
 const textStyle = { marginTop: "10px", color: "red", fontWeight: "bold" };
 
